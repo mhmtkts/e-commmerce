@@ -50,17 +50,13 @@ public class UserServiceImpl implements UserService {
     public User updateUser(Long id, UserDTO userDTO) {
         User user = getUserById(id);
 
-        if (!user.getUsername().equals(userDTO.username()) &&
-                userRepository.findByUsername(userDTO.username()).isPresent()) {
-            throw new ApiException("Username already exists: " + userDTO.username(), HttpStatus.CONFLICT);
-        }
+
         if (!user.getEmail().equals(userDTO.email()) &&
                 userRepository.findByEmail(userDTO.email()).isPresent()) {
             throw new ApiException("Email already exists: " + userDTO.email(), HttpStatus.CONFLICT);
         }
 
         Role role = roleService.getRoleById(userDTO.role().id());
-        user.setUsername(userDTO.username());
         user.setEmail(userDTO.email());
         user.setRole(role);
         if (userDTO.password() != null && !userDTO.password().isEmpty()) {
