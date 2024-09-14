@@ -1,0 +1,36 @@
+package com.example.e_commmerce.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Entity
+@Table(name = "carts", schema = "ecommerce")
+public class Cart {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    @NotNull
+    private User user;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private List<CartItem> items = new ArrayList<>();
+
+    public Cart(User user) {
+        this.user = user;
+    }
+}
