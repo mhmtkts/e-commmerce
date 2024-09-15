@@ -7,9 +7,6 @@ import com.example.e_commmerce.exceptions.ApiException;
 import com.example.e_commmerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,13 +15,10 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,
-                           RoleService roleService
-                           ) {
+    public UserServiceImpl(UserRepository userRepository, RoleService roleService) {
         this.userRepository = userRepository;
         this.roleService = roleService;
     }
-
 
     @Override
     public User getUserById(Long id) {
@@ -34,14 +28,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(UserDTO userDTO) {
+        Role role = roleService.getRoleById(userDTO.role().id());
+
         User user = new User();
+        user.setEmail(userDTO.email());
+        user.setPassword(userDTO.password());
+        user.setRole(role);
+
         return userRepository.save(user);
     }
 
     @Override
     public User updateUser(Long id, UserDTO userDTO) {
         User user = getUserById(id);
-
 
         if (!user.getEmail().equals(userDTO.email()) &&
                 userRepository.findByEmail(userDTO.email()).isPresent()) {
@@ -52,7 +51,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDTO.email());
         user.setRole(role);
         if (userDTO.password() != null && !userDTO.password().isEmpty()) {
-            user.setPassword((userDTO.password()));
+            user.setPassword(userDTO.password());
         }
         return userRepository.save(user);
     }
