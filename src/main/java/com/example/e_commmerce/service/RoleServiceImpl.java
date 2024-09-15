@@ -58,4 +58,16 @@ public class RoleServiceImpl implements RoleService {
         }
         roleRepository.deleteById(id);
     }
+
+    @Override
+    public Role getUserRole() {
+        return roleRepository.findByName("ROLE_USER")
+                .orElseThrow(() -> new ApiException("User role not found", HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    @Override
+    public Role getAdminRole() {
+        return roleRepository.findByName("ROLE_ADMIN")
+                .orElseThrow(() -> new ApiException("Admin role not found", HttpStatus.INTERNAL_SERVER_ERROR));
+    }
 }

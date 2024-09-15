@@ -32,24 +32,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(UserDTO userDTO) {
-        List<Role> roles = new ArrayList<>();
-
-        for (RoleDTO roleDTO : userDTO.roles()) {
-            Role role = roleService.getRoleById(roleDTO.id());
-            if (role == null) {
-                throw new ApiException("Role not found: " + roleDTO.id(), HttpStatus.BAD_REQUEST);
-            }
-            roles.add(role);
-        }
+        Role role = userDTO.isAdmin() ? roleService.getAdminRole() : roleService.getUserRole();
 
         User user = new User();
         user.setEmail(userDTO.email());
-        user.setPassword(userDTO.password()); // Şifreleme olmadan
-        user.setRoles(roles); // Rolleri ayarlama
+        user.setPassword(userDTO.password());
+        user.setRole(role);
 
-        return userRepository.save(user); // Kullanıcıyı veritabanına kaydet
+        return userRepository.save(user);
     }
-
 
     @Override
     public User updateUser(Long id, UserDTO userDTO) {
@@ -60,23 +51,16 @@ public class UserServiceImpl implements UserService {
             throw new ApiException("Email already exists: " + userDTO.email(), HttpStatus.CONFLICT);
         }
 
-        List<Role> roles = new ArrayList<>();
-        for (RoleDTO roleDTO : userDTO.roles()) {
-            Role role = roleService.getRoleById(roleDTO.id());
-            if (role == null) {
-                throw new ApiException("Role not found: " + roleDTO.id(), HttpStatus.BAD_REQUEST);
-            }
-            roles.add(role);
-        }
-
         user.setEmail(userDTO.email());
-        user.setRoles(roles); // Rolleri güncelleyin
+
+        Role role = userDTO.isAdmin() ? roleService.getAdminRole() : roleService.getUserRole();
+        user.setRole(role);
 
         if (userDTO.password() != null && !userDTO.password().isEmpty()) {
-            user.setPassword(userDTO.password()); // Şifreleme olmadan
+            user.setPassword(userDTO.password());
         }
 
-        return userRepository.save(user); // Kullanıcıyı veritabanına kaydedin
+        return userRepository.save(user);
     }
 
 

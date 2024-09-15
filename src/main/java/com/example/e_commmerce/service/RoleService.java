@@ -11,4 +11,6 @@ public interface RoleService {
     Role createRole(RoleDTO roleDTO);
     Role updateRole(Long id, RoleDTO roleDTO);
     void deleteRole(Long id);
+    Role getUserRole();
+    Role getAdminRole();
 }

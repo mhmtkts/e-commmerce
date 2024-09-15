@@ -1,5 +1,6 @@
 package com.example.e_commmerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +24,8 @@ public class Role{
     private String name;
 
 
-    @ManyToMany(mappedBy = "roles")
-    private List<User> users = new ArrayList<>();
+    @OneToMany(mappedBy = "role")
+    @JsonBackReference
+    private List<User> users;
 
 }
