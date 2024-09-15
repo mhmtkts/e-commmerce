@@ -30,8 +30,4 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
 
-    public void setRole(Role role) {
-        roles.clear();
-        roles.add(role);
-    }
 }
