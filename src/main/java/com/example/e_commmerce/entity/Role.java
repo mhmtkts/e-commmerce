@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "roles", schema = "ecommerce")
-public class Role implements GrantedAuthority {
+public class Role{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +22,6 @@ public class Role implements GrantedAuthority {
 
     @Column(nullable = false, unique = true)
     private String name;
-
-    @Column(name = "authority")
-    private String authority;
 
 
     @ManyToMany(mappedBy = "roles")
