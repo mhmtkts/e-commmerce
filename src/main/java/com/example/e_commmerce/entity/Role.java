@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -22,5 +25,9 @@ public class Role implements GrantedAuthority {
 
     @Column(name = "authority")
     private String authority;
+
+
+    @ManyToMany(mappedBy = "roles")
+    private List<User> users = new ArrayList<>();
 
 }
