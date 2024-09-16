@@ -36,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product createProduct(ProductDTO productDTO) {
-        Category category = categoryService.getCategoryById(productDTO.category().id());
+        Category category = categoryService.getCategoryById(productDTO.categoryId());
         Product product = new Product();
         product.setName(productDTO.name());
         product.setPrice(productDTO.price());
@@ -45,10 +45,10 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.save(product);
     }
 
-    @Override
+        @Override
     public Product updateProduct(Long id, ProductDTO productDTO) {
         Product product = getProductById(id);
-        Category category = categoryService.getCategoryById(productDTO.category().id());
+        Category category = categoryService.getCategoryById(productDTO.categoryId());
 
         product.setName(productDTO.name());
         product.setPrice(productDTO.price());

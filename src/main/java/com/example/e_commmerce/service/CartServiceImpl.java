@@ -9,6 +9,7 @@ import com.example.e_commmerce.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -55,15 +56,23 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public Cart removeItemFromCart(Long userId, Long productId) {
-        Cart cart = getCartByUserId(userId);
-        cart.getItems().removeIf(item -> item.getProduct().getId().equals(productId));
-        return cartRepository.save(cart);
+    @Transactional
+    public void removeItemFromCart(Long userId, Long productId) {
+        Cart cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new ApiException("Cart not found for user: " + userId, HttpStatus.NOT_FOUND));
+
+        boolean removed = cart.getItems().removeIf(item -> item.getProduct().getId().equals(productId));
+
+        if (!removed) {
+            throw new ApiException("Product not found in cart", HttpStatus.NOT_FOUND);
+        }
+
+        cartRepository.save(cart);
     }
 
     @Override
-    public void clearCart(Long userId) {
-        Cart cart = getCartByUserId(userId);
+    @Transactional
+    public void clearCart(Cart cart) {
         cart.getItems().clear();
         cartRepository.save(cart);
     }

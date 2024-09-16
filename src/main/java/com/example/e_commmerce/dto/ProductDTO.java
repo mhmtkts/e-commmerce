@@ -5,5 +5,5 @@ public record ProductDTO(
         String name,
         Double price,
         String pictureUrl,
-        CategoryDTO category
+        Long categoryId
 ) {}
