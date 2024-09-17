@@ -1,6 +1,5 @@
 package com.example.e_commmerce.service;
 
-import com.example.e_commmerce.dto.RoleDTO;
 import com.example.e_commmerce.dto.UserDTO;
 import com.example.e_commmerce.entity.Role;
 import com.example.e_commmerce.entity.User;
@@ -8,20 +7,20 @@ import com.example.e_commmerce.exceptions.ApiException;
 import com.example.e_commmerce.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleService roleService) {
+    public UserServiceImpl(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -36,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
         user.setEmail(userDTO.email());
-        user.setPassword(userDTO.password());
+        user.setPassword(passwordEncoder.encode(userDTO.password()));
         user.setRole(role);
 
         return userRepository.save(user);
@@ -57,14 +56,11 @@ public class UserServiceImpl implements UserService {
         user.setRole(role);
 
         if (userDTO.password() != null && !userDTO.password().isEmpty()) {
-            user.setPassword(userDTO.password());
+            user.setPassword(passwordEncoder.encode(userDTO.password()));
         }
 
         return userRepository.save(user);
     }
-
-
-
 
     @Override
     public void deleteUser(Long id) {

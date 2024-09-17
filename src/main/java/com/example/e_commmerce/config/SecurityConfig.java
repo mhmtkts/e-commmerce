@@ -23,7 +23,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/api/users").permitAll() // Kullanıcı kaydı için
                         // CartController
                         .requestMatchers("/api/cart/**").authenticated()
 
@@ -51,14 +51,13 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .permitAll()
+                        .permitAll() // Default login sayfasını kullan
                 )
                 .csrf(csrf -> csrf.disable())
-                .userDetailsService(customUserDetailsService);// Geliştirme aşamasında CSRF'i devre dışı bırakıyoruz
+                .userDetailsService(customUserDetailsService);
 
         return http.build();
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
